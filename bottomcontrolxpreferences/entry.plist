@@ -1,0 +1,10 @@
+{
+    entry = {
+	bundle = BottomControlXPreferences;
+	cell = PSLinkCell;
+	detail = BottomControlXPreferencesListController;
+	icon = BottomControlXPreferences.png;
+	isController = 1;
+	label = BottomControlX;
+    };
+}
