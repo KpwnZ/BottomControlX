@@ -1,5 +1,5 @@
 # BottomControlX
-Easier access to your ControlCenter on iPhone X. Available on TheBigBoss repo. Support all iOS devices with Fluid Gesture from iOS 11 to iOS 13. Also, this version remove the poor DRM check.
+Easier access to your ControlCenter and other things on iPhone X. Available on TheBigBoss repo. Support all iOS devices with Fluid Gesture from iOS 11 to iOS 13. You can replace the original Fluid Gesture with ControlCenter gesture, CoverSheet gesture, Screenshot gesture and so on. Also, this version remove the poor DRM check.
 
 ## Warning
 It's a really old project and the coding style is really awful... :-| It may be buggy and difficult to compile.
