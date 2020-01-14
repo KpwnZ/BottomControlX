@@ -249,7 +249,8 @@ NSString* getPreferredLanguage() {
                     @"key": @"centerValue"
                  },
                  @{
-                    @"cell": @"PSGroupCell"
+                     @"cell": @"PSGroupCell",
+                     @"footerText": @"Custom the velocity value which is needed to trigger BottomControlX gesture when you have lower gesture sensibility enabled."
                  },
                  @{
                     @"cell": @"PSSwitchCell",
@@ -259,6 +260,17 @@ NSString* getPreferredLanguage() {
                     @"label": @"Lower gesture sensibility",
                     @"PostNotification": @"com.XCXiaoBCCXreloadSettings",
                     @"cellClass": @"SKTintedSwitchCell"
+                 },
+                 @{
+                    @"cell": @"PSSliderCell",
+                    @"min": @100,
+                    @"max": @500,
+                    @"showValue": @YES,
+                    @"isContinuous": @YES,
+                    @"PostNotification": @"com.XCXiaoBCCXreloadSettings",
+                    @"defaults": @"com.xcxiao.bottomcontrolxpreferences",
+                    @"default": @350,
+                    @"key": @"velocityValue"
                  },
                  @{
                      @"cell": @"PSGroupCell"

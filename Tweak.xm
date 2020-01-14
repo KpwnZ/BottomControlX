@@ -34,11 +34,12 @@ static int      AppBottomRightGesture        = 1;
 
 static CGFloat  leftValue                    = 0;
 static CGFloat  rightValue                   = 0;
+static float    velocityValue                = 350;
 static BOOL     lowerSensibility             = NO;
+static BOOL     enabled                      = NO;
 
 // static BOOL     bringControlCenterUp         = NO;
 // static int      location                     = 1;
-static BOOL     enabled                      = NO;
 
 inline int handleSwipeUpGesture(CGFloat startPoint, int left, int center, int right) {
 
@@ -92,6 +93,8 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
     AppBottomCenterGesture    = readThePreferencesFile(@"AppBottomCenterGesture", intValue, 1);
     AppBottomRightGesture     = readThePreferencesFile(@"AppBottomRightGesture", intValue, 1);
 
+    velocityValue             = readThePreferencesFile(@"velocityValue", floatValue, 350);
+
 }
 
 %group Gesture
@@ -131,7 +134,7 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
 
 -(void)grabberTongueBeganPulling:(id)arg1 withDistance:(double)arg2 andVelocity:(double)arg3 {
 
-    if(arg3 <= 350 && lowerSensibility) {
+    if(arg3 <= velocityValue && lowerSensibility) {
         %orig;
         return;
     }
@@ -144,7 +147,7 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
                                              : kScreenWidth - point.y;
 
     int result;
-    if(![(SpringBoard *)[UIApplication sharedApplication] _accessibilityFrontMostApplication]) {
+    if(![(SpringBoard  *)[UIApplication sharedApplication] _accessibilityFrontMostApplication]) {
         result = handleSwipeUpGesture(pointX, SBBottomLeftGesture, SBBottomCenterGesture, SBBottomRightGesture);
     }else {
         result = handleSwipeUpGesture(pointX, AppBottomLeftGesture, AppBottomCenterGesture, AppBottomRightGesture);
