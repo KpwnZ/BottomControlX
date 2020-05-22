@@ -157,7 +157,30 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
     if(result == -1)    return;
 
 }
+- (void)grabberTongueBeganPulling:(id)arg1 withDistance:(double)arg2 andVelocity:(double)arg3 andGesture:(id)arg4  {
 
+    if(arg3 <= velocityValue && lowerSensibility) {
+        %orig;
+        return;
+    }
+
+    CGPoint point   = [[self.deckGrabberTongue valueForKey:@"_edgePullGestureRecognizer"] locationInView:[self.deckGrabberTongue valueForKey:@"_tongueContainer"]];
+    int ori         = [((SpringBoard *)[UIApplication sharedApplication]) _frontMostAppOrientation];
+
+    CGFloat pointX = (ori == 1) ? point.x
+                                : (ori == 3) ? point.y
+                                             : kScreenWidth - point.y;
+
+    int result;
+    if(![(SpringBoard  *)[UIApplication sharedApplication] _accessibilityFrontMostApplication]) {
+        result = handleSwipeUpGesture(pointX, SBBottomLeftGesture, SBBottomCenterGesture, SBBottomRightGesture);
+    }else {
+        result = handleSwipeUpGesture(pointX, AppBottomLeftGesture, AppBottomCenterGesture, AppBottomRightGesture);
+    }
+
+    if(result == 0)     %orig;
+    if(result == -1)    return;
+}
 %end
 
 // set center value when SpringBoard lanched
