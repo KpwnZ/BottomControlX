@@ -120,6 +120,7 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
     BOOL hasBeenAuthenticated = NO;
     if(kiOSVersion >= 13.0) hasBeenAuthenticated = [[[%c(SBLockScreenManager) sharedInstance] coverSheetViewController] isAuthenticated];
     else hasBeenAuthenticated = [[[%c(SBLockScreenManager) sharedInstance] lockScreenViewController] isAuthenticated];
+
     if(!isLocked || handleSwipeUpGesture(point.x, LBottomLeftGesture, LBottomCenterGesture, LBottomRightGesture) == 0) {
         %orig;
         return;
@@ -220,7 +221,7 @@ void refreshLockedStatus(CFNotificationCenterRef center, void *observer, CFStrin
     }
 
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadSettings, CFSTR("com.xcxiao.BCCX/reloadSettings"), NULL, CFNotificationSuspensionBehaviorCoalesce);
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, refreshLockedStatus, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, refreshLockedStatus, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
     reloadSettings(nil, nil, nil, nil, nil);
 
