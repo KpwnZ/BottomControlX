@@ -38,6 +38,7 @@ static CGFloat  rightValue                   = 0;
 static float    velocityValue                = 350;
 static BOOL     lowerSensibility             = NO;
 static BOOL     enabled                      = NO;
+static BOOL     isLocked                     = YES;
 
 // static BOOL     bringControlCenterUp         = NO;
 // static int      location                     = 1;
@@ -100,6 +101,16 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
 
 %group Gesture
 
+// coversheet stuff
+%hook CSCoverSheetViewController
+
+- (void)viewWillAppear:(BOOL)arg1 {
+    %orig;
+    isLocked = ![[[%c(SBLockScreenManager) sharedInstance] coverSheetViewController] isAuthenticated];
+}
+
+%end
+
 // handle coversheet gesture
 %hook SBCoverSheetPrimarySlidingViewController
 
@@ -109,7 +120,7 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
     BOOL hasBeenAuthenticated = NO;
     if(kiOSVersion >= 13.0) hasBeenAuthenticated = [[[%c(SBLockScreenManager) sharedInstance] coverSheetViewController] isAuthenticated];
     else hasBeenAuthenticated = [[[%c(SBLockScreenManager) sharedInstance] lockScreenViewController] isAuthenticated];
-    if(hasBeenAuthenticated || handleSwipeUpGesture(point.x, LBottomLeftGesture, LBottomCenterGesture, LBottomRightGesture) == 0) {
+    if(!isLocked || handleSwipeUpGesture(point.x, LBottomLeftGesture, LBottomCenterGesture, LBottomRightGesture) == 0) {
         %orig;
         return;
     }
@@ -198,6 +209,8 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
 
 %end
 
+void refreshLockedStatus(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) { isLocked = YES; }
+
 // constructor
 %ctor {
     enabled = readThePreferencesFile(@"EnabledBCCX", boolValue, YES);
@@ -207,6 +220,8 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
     }
 
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadSettings, CFSTR("com.xcxiao.BCCX/reloadSettings"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, refreshLockedStatus, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+
     reloadSettings(nil, nil, nil, nil, nil);
 
 }
