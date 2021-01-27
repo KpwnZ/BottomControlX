@@ -43,8 +43,8 @@ static BOOL     isLocked                     = YES;
 // static BOOL     bringControlCenterUp         = NO;
 // static int      location                     = 1;
 
-inline int handleSwipeUpGesture(CGFloat startPoint, int left, int center, int right) {
-
+inline int handleSwipeUpGesture(CGFloat startPoint, int left, int center, int right, CGPoint v = CGPointMake(1, 6)) {
+    if(abs(v.y/(v.x+1)) < 2.414) return 0;
     int gesture = 0;
     int ori = [((SpringBoard *)[UIApplication sharedApplication]) _frontMostAppOrientation];
     if(ori == 1) {
@@ -158,12 +158,14 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
     CGFloat pointX = (ori == 1) ? point.x
                                 : (ori == 3) ? point.y
                                              : kScreenWidth - point.y;
-
+    
+    CGPoint v       = [[self.deckGrabberTongue valueForKey:@"_edgePullGestureRecognizer"] velocityInView:[self.deckGrabberTongue valueForKey:@"_tongueContainer"]];
+    NSLog(@"[BottomControlX]: %f, %f", v.x, v.y);
     int result;
     if(![(SpringBoard  *)[UIApplication sharedApplication] _accessibilityFrontMostApplication]) {
-        result = handleSwipeUpGesture(pointX, SBBottomLeftGesture, SBBottomCenterGesture, SBBottomRightGesture);
+        result = handleSwipeUpGesture(pointX, SBBottomLeftGesture, SBBottomCenterGesture, SBBottomRightGesture, v);
     }else {
-        result = handleSwipeUpGesture(pointX, AppBottomLeftGesture, AppBottomCenterGesture, AppBottomRightGesture);
+        result = handleSwipeUpGesture(pointX, AppBottomLeftGesture, AppBottomCenterGesture, AppBottomRightGesture, v);
     }
 
     if(result == 0)     %orig;
@@ -184,11 +186,13 @@ static void reloadSettings(CFNotificationCenterRef center, void *observer, CFStr
                                 : (ori == 3) ? point.y
                                              : kScreenWidth - point.y;
 
+    CGPoint v       = [[self.deckGrabberTongue valueForKey:@"_edgePullGestureRecognizer"] velocityInView:[self.deckGrabberTongue valueForKey:@"_tongueContainer"]];
+    NSLog(@"[BottomControlX]: %f, %f", v.x, v.y);
     int result;
     if(![(SpringBoard  *)[UIApplication sharedApplication] _accessibilityFrontMostApplication]) {
-        result = handleSwipeUpGesture(pointX, SBBottomLeftGesture, SBBottomCenterGesture, SBBottomRightGesture);
+        result = handleSwipeUpGesture(pointX, SBBottomLeftGesture, SBBottomCenterGesture, SBBottomRightGesture, v);
     }else {
-        result = handleSwipeUpGesture(pointX, AppBottomLeftGesture, AppBottomCenterGesture, AppBottomRightGesture);
+        result = handleSwipeUpGesture(pointX, AppBottomLeftGesture, AppBottomCenterGesture, AppBottomRightGesture, v);
     }
 
     if(result == 0)     %orig;
